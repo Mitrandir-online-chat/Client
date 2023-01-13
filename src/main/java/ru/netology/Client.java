@@ -6,11 +6,14 @@ import ru.netology.repository.Repository;
 import ru.netology.service.Service;
 import ru.netology.settings.Settings;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) throws IOException {
@@ -21,10 +24,25 @@ public class Client {
         var port = settings.getPort();
 
         try (var clientSocket = new Socket(address, Integer.parseInt(port))) {
+            var toServer = new PrintWriter(clientSocket.getOutputStream(), true);
+            var fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            toServer.println(settings.getUsername());
+            var greeting = fromServer.readLine();
+            System.out.println(greeting);
+            var scanner = new Scanner(System.in);
+            var messageOfClient = scanner.nextLine();
+            toServer.println(messageOfClient);
+            var messagesFromClients = fromServer.readLine();
+            System.out.println(messagesFromClients);
+            while (true) {
+
+            }
+
 
         } catch (IOException e) {
             e.getMessage();
         }
+
 
 
 
