@@ -1,8 +1,7 @@
 package ru.netology;
 
 import org.yaml.snakeyaml.Yaml;
-import ru.netology.controller.Controller;
-import ru.netology.repository.Repository;
+import ru.netology.repository.MessageRepository;
 import ru.netology.service.Service;
 import ru.netology.settings.Settings;
 
@@ -17,9 +16,10 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) throws IOException {
-        createLayers();
+
 
         var settings = getSettings();
+        var service = createLayers(settings);
         var address = settings.getAddress();
         var port = settings.getPort();
 
@@ -30,13 +30,19 @@ public class Client {
             var greeting = fromServer.readLine();
             System.out.println(greeting);
             var scanner = new Scanner(System.in);
-            var messageOfClient = scanner.nextLine();
-            toServer.println(messageOfClient);
-            var messagesFromClients = fromServer.readLine();
-            System.out.println(messagesFromClients);
-            while (true) {
 
+            while (true) {
+                var messageOfClient = scanner.nextLine();
+                toServer.println(messageOfClient);
+                var messagesFromClients = fromServer.readLine();
+                System.out.println(messagesFromClients);
+                service.recordMessageOfClient(messagesFromClients);
+                System.out.println("введите сообщение");
+                if (messageOfClient.equals("/exit")) {
+                    break;
+                }
             }
+
 
 
         } catch (IOException e) {
@@ -49,10 +55,10 @@ public class Client {
 
     }
 
-    private static void createLayers() {
-        var repository = new Repository();
+    private static Service createLayers(Settings settings) {
+        var repository = new MessageRepository(settings.getLogPath());
         var service = new Service(repository);
-        var controller = new Controller(service);
+        return service;
     }
 
     private static Settings getSettings() throws IOException {

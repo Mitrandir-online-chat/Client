@@ -4,6 +4,12 @@ public class Settings {
     private String address;
     private String port;
     private String username;
+    private String logPath;
+
+    public String getLogPath() {
+        return logPath;
+    }
+
 
     public String getAddress() {
         return address;
@@ -27,6 +33,12 @@ public class Settings {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setLogPath(String logPath) {
+        this.logPath = logPath;
+    }
+
+
 
 
 }
