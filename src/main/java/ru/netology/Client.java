@@ -24,35 +24,11 @@ public class Client {
         var port = settings.getPort();
 
         try (var clientSocket = new Socket(address, Integer.parseInt(port))) {
-            var toServer = new PrintWriter(clientSocket.getOutputStream(), true);
-            var fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            toServer.println(settings.getUsername());
-            var greeting = fromServer.readLine();
-            System.out.println(greeting);
-            var scanner = new Scanner(System.in);
-
-            while (true) {
-                var messageOfClient = scanner.nextLine();
-                toServer.println(messageOfClient);
-                var messagesFromClients = fromServer.readLine();
-                System.out.println(messagesFromClients);
-                service.recordMessageOfClient(messagesFromClients);
-                System.out.println("введите сообщение");
-                if (messageOfClient.equals("/exit")) {
-                    break;
-                }
-            }
-
-
-
+            service.initializeClient(clientSocket, settings);
+            service.processMessages(clientSocket);
         } catch (IOException e) {
             e.getMessage();
         }
-
-
-
-
-
     }
 
     private static Service createLayers(Settings settings) {
